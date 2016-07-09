@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()){
             case R.id.bt0:
+                if(tv_main_result.getText().toString().equals("0")){
+                    break;
+                }
                 tv_main_result.append("0");
                 break;
 
@@ -91,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.bt_point:
+
+                /**
+                 * 如果显示文本框中没有数据，小数点的输入无效
+                 */
+                if(tv_main_result.getText().toString().equals("")){
+                    break;
+                }
 
                 /**
                  * 遍历TextView，看字符串中是否包含小数点，如果包含，就不能再次输入
@@ -176,22 +187,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 items.add(new Item(Double.parseDouble(tv_main_result.getText().toString()),Types.VALUE));
                 checkAddCompute();
-                tv_main_result.setText(items.get(0).number+"");
+                double number = items.get(0).number;
+                tv_main_result.setText(number+"");
+                Log.i("number",number+"");
                 items.clear();
                 break;
         }
     }
-    
+
     public void checkAddCompute(){
         if(items.size()>=3){
 
             double a = items.get(0).number;
+            BigDecimal a1 = new BigDecimal(Double.toString(a));
             double b = items.get(2).number;
+            BigDecimal b1 = new BigDecimal(Double.toString(b));
+
             int opt = items.get(1).type;
 
-            Log.i("checkAddCompute",a+"");
-            Log.i("checkAddCompute",b+"");
-            Log.i("checkAddCompute",opt+"");
+            Log.i("checkAddCompute","a"+a);
+            Log.i("checkAddCompute","b"+b);
+            Log.i("checkAddCompute","opt"+opt);
 
             //清空
             items.clear();
@@ -206,11 +222,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
 
                 case Types.MULTIPLY:
-                    items.add(new Item(a*b,Types.VALUE));
+                    String s = a1.multiply(b1).toString();
+                    double s1 = Double.parseDouble(s);
+                    items.add(new Item(s1,Types.VALUE));
                     break;
 
                 case Types.DIVIDE:
-                    items.add(new Item(a/b,Types.VALUE));
+                    String s2 = a1.divide(b1).toString();
+                    double s3 = Double.parseDouble(s2);
+                    items.add(new Item(s3,Types.VALUE));
                     break;
             }
         }
